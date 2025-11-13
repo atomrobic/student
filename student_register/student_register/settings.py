@@ -53,6 +53,23 @@ DATABASE_URL = os.environ.get(
     "DATABASE_URL",
     "postgresql://postgres.yaqdztvarxycqwvjwemz:akhilappu007@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
 )
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Static files (CSS, JS, images)
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Extra static file directories (for dev)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# Media files (optional)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Remove unsupported query parameter (?pgbouncer=true)
 if "pgbouncer=true" in DATABASE_URL:
