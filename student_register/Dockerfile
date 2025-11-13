@@ -1,29 +1,28 @@
-# Use official Python base image
+# Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Set working directory
+# Set work directory
 WORKDIR /app
 
-# Install system dependencies (including git)
-RUN apt-get update && apt-get install -y git && apt-get clean
-
-# Copy requirements and install
-COPY requirements.txt /app/
+# Install dependencies
+COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Copy project files
-COPY . /app/
+# Copy project
+COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
+# Set STATIC_ROOT for collectstatic
+ENV DJANGO_SETTINGS_MODULE=student_register.settings
+RUN mkdir -p /app/staticfiles
+RUN python manage.py collectstatic --noinput || true
 
-# Expose port
+# Expose port 8000
 EXPOSE 8000
 
-# Start the server
+# Start Gunicorn server
 CMD ["gunicorn", "student_register.wsgi:application", "--bind", "0.0.0.0:8000"]
